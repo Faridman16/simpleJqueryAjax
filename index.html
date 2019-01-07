@@ -1,0 +1,199 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="https://img.icons8.com/windows/32/000000/popeye.png">
+
+    <title>Simple Jquery Ajax</title>
+
+    <!-- CDN BOOTSRAP -->>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" 
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" 
+            crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" 
+            integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" 
+            crossorigin="anonymous">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" 
+            crossorigin="anonymous">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function(){
+        $("#userTable").hide()
+        $("#deleteMode").hide()
+        $("#fetchingInfo").hide()
+
+        $("#getUser").click(function(){
+          $.ajax({
+            url:'https://randomuser.me/api/?results=10',
+            dataType:'json',
+            success:function(res){
+              res.results.forEach(fetchUser)
+              $("#fetchingInfo").hide(500)
+              $("#userTable").show(1000)
+              $("#userTable").css("cursor","pointer")
+            }
+          })
+        })
+
+        $(".clearUser").click(function(){
+          if ($("#clearUser").val() != "DELETE"){
+            $(document.body).css("background-color","black")
+            $("#userTable").css("background-color","white")
+            $('html, body').animate({
+                scrollTop: $("#userTable").offset().top
+            }, 1000);
+            console.log("MODE DELETE")
+            $("#clearUser").val("DELETE")
+            $("#deleteMode").toggle("fast")
+            $("#userTable tbody tr:has(td)").click(function() {
+              if ($("#clearUser").val() == "DELETE"){
+                $(this).fadeOut(500, function() {
+                  $(this).remove();
+                });
+              }
+            });
+          }else{
+            console.log("MODE BIASA")
+            $(document.body).css("background-color","white")
+            $("#clearUser").val("BIASA")
+            $("#clearUser").val("Delete User")
+            $("#deleteMode").toggle("slow")
+          }
+        })
+      })
+
+      function fetchUser(item, index) {
+        var table = document.getElementById("userTable").getElementsByTagName('tbody')[0];
+        var row = table.insertRow(0);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+
+        cell1.innerHTML = '<img id="two" src="'+ item.picture.medium +'">' ;
+        cell2.innerHTML = toTitleCase(item.name.title) +". " +toTitleCase(item.name.first) +" " +toTitleCase(item.name.last);
+        cell3.innerHTML = toTitleCase(item.location.street) +" " +toTitleCase(item.location.city) +" " +toTitleCase(item.location.state);
+        cell4.innerHTML = item.email;
+      
+      }        
+
+      var toTitleCase = function (str) {
+          str = str.toLowerCase().split(' ');
+          for (var i = 0; i < str.length; i++) {
+            str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
+          }
+          return str.join(' ');
+        };        
+    </script>
+            
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right">
+            <div class="form-group">
+              <input type="text" placeholder="Email" class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="password" placeholder="Password" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Hello, world!</h1>
+        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>Heading</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn btn-default" id="getUser" role="button">Get User &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>Heading</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn btn-default clearUser" id="clearUser" role="button">Remove User &raquo;</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>Heading</h2>
+          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <p><a class="btn btn-default" role="button">View details &raquo;</a></p>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top: 40px">
+          <div class="col-md-12">
+            
+            <table class="table table-condensed table-hover" id="userTable">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Location</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+            </table>
+            
+          </div>
+        </div>      
+
+      <hr>
+
+      <footer>
+        <p>&copy; 2016 Company, Inc.</p>
+      </footer>
+
+      <div class="alert alert-info" id="deleteMode" style="position: fixed;top:40%;left:50%;width: 352px;">
+        <strong>Info!</strong> Delete Mode. <button class="btn btn-primary btn-sm clearUser pull-right">Done</button>
+      </div>    
+    </div> <!-- /container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
